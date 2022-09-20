@@ -1,6 +1,6 @@
 pipeline {
 environment {
-imagename = "naveen9172/devnode"
+imagename = "naveen9172/klaus"
 registryCredential = 'dockerhubcredentials'
 dockerImage = ''
 }
