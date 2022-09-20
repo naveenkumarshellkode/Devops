@@ -1,38 +1,38 @@
-pipeline {
-environment {
-imagename = "naveen9172/nknodeapp"
-registryCredential = 'naveen9172-dockerhub'
-dockerImage = ''
-}
-agent any
-stages {
-stage('Cloning Git') {
-steps {
-git([url: 'https://github.com/naveenkumarshellkode/Devops.git', branch: 'master', credentialsId: 'github'])
-}
-}
-stage('Building image') {
-steps{
-script {
-dockerImage = docker.build imagename
-}
-}
-}
-stage('Deploy Image') {
-steps{
-script {
-docker.withRegistry( '', registryCredential ) {
-dockerImage.push("$BUILD_NUMBER")
-dockerImage.push('latest')
-}
-}
-}
-}
-stage('Remove Unused docker image') {
-steps{
-sh "docker rmi $imagename:$BUILD_NUMBER"
-sh "docker rmi $imagename:latest"
-}
-}
-}
-}
+pipeline {   
+  agent{      
+    node { label 'slavefordocker'}     
+  }  
+  environment {     
+    DOCKERHUB_CREDENTIALS= credentials('dockerhubcredentials')     
+  }    
+  stages {         
+    stage("Git Checkout"){           
+      steps{                
+	git credentialsId: 'github', url: 'https://github.com/naveen.v@shellkode.com/Devops'                 
+	echo 'Git Checkout Completed'            
+      }        
+    }
+    stage('Build Docker Image') {         
+      steps{                
+	sh 'sudo docker build -t dockerhubusername/dockerhubreponame:$BUILD_NUMBER .'           
+        echo 'Build Image Completed'                
+      }           
+    }
+    stage('Login to Docker Hub') {         
+      steps{                            
+	sh 'echo $DOCKERHUB_CREDENTIALS_PSW | sudo docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'                 
+	echo 'Login Completed'                
+      }           
+    }               
+    stage('Push Image to Docker Hub') {         
+      steps{                            
+	sh 'sudo docker push dockerhubusername/dockerhubreponame:$BUILD_NUMBER'                 echo 'Push Image Completed'       
+      }           
+    }      
+  } //stages 
+  post{
+    always {  
+      sh 'docker logout'           
+    }      
+  }  
+} //pipeline
