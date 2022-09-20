@@ -1,6 +1,6 @@
 pipeline {
 environment {
-imagename = "dockerhubrepo/mynodeappdemo"
+imagename = "naveen9172/nknodeapp"
 registryCredential = 'dockerhub-user'
 dockerImage = ''
 }
@@ -32,3 +32,7 @@ stage('Remove Unused docker image') {
 steps{
 sh "docker rmi $imagename:$BUILD_NUMBER"
 sh "docker rmi $imagename:latest"
+}
+}
+}
+}
