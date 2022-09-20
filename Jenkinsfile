@@ -1,6 +1,6 @@
 pipeline {
 environment {
-imagename = "naveen9172/demonodeapp"
+imagename = "naveen9172/nodeappsk"
 registryCredential = 'dockerhub-user'
 dockerImage = ''
 }
