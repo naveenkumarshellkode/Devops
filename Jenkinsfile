@@ -14,7 +14,7 @@ git([url: 'https://github.com/naveenkumarshellkode/Devops.git', branch: 'main', 
 stage('Building image') {
 steps{
 script {
-dockerImage = docker build -t $imagename .
+dockerImage = docker .build imagename
 }
 }
 }
