@@ -1,29 +1,38 @@
 pipeline {
-  environment {
-    registry = "<my_docker_hub userid>/object"
-    registryCredential = 'dockerhubcredentials'
-  }
-  agent { label 'ubuntu16.04-slave-two' }
-  stages {
-    stage('Cloning Git') {
-        steps {
-            ...
-            }
-    }
-    stage('Building image') {
-      steps{
-            sh "/usr/local/bin/docker-compose -p $registry:$BUILD_NUMBER build "
-        }
-    }
-    stage('Deploy Image') {
-      steps{
-        sh "docker push $registry:$BUILD_NUMBER"
-      }
-    }
-    stage('Remove Unused docker image') {
-      steps{
-        sh "docker rmi $registry:$BUILD_NUMBER"
-      }
-    }
-  }
+environment {
+imagename = "naveen9172/nknodeapp"
+registryCredential = 'dockerhubcredentials'
+dockerImage = ''
+}
+agent any
+stages {
+stage('Cloning Git') {
+steps {
+git([url: 'https://github.com/naveenkumarshellkode/Devops.git', branch: 'main', credentialsId: 'github-login'])
+}
+}
+stage('Building image') {
+steps{
+script {
+dockerImage = docker.build imagename
+}
+}
+}
+stage('Deploy Image') {
+steps{
+script {
+docker.withRegistry( '', registryCredential ) {
+dockerImage.push("$BUILD_NUMBER")
+dockerImage.push('latest')
+}
+}
+}
+}
+stage('Remove Unused docker image') {
+steps{
+sh "docker rmi $imagename:$BUILD_NUMBER"
+sh "docker rmi $imagename:latest"
+}
+}
+}
 }
