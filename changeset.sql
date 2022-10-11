@@ -1,7 +1,7 @@
 --liquibase formatted sql
 
 --changeset naveen:99
-create table test 03 (
+create table test03 (
 id int primary key,
 name varchar(255)
 );
