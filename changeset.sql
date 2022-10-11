@@ -1,7 +1,7 @@
 --liquibase formatted sql
 
---changeset skode:10
-create table test10 (
+--changeset shellkode:15
+create table demo15 (
 id int primary key,
 name varchar(255)
 );
